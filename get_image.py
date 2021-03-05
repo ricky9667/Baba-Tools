@@ -27,6 +27,7 @@ def get_operators(url):
             print(filename)
             print(fileSrc)
             download(fileSrc, './operators/', filename)
+    print('====== DOWNLOAD SUCCESSFULLY ======')
 
 
 def get_nouns(url):
@@ -63,44 +64,7 @@ def get_properties(url):
             else:
                 fileSrc = img.get('src')
             download(fileSrc, './properties/', filename)
-
-
-def get_images(url, type):
-    print('Downloading', type, 'images ...')
-
-    # get html
-    resp = requests.get(url)
-    soup = BeautifulSoup(resp.text, 'html.parser')
-    table = soup.find('table', class_='article-table')
-
-    # get operator images
-    get_operators(table)
-
-    # imgs = table.find_all('img')
-    # for img in imgs:
-    # print(img)
-    # if 'data-src' in img:
-    # print(img)
-    # filename = img.get('data-image-key')
-    # print(img.attrs)
-
-    # download nouns
-    # if 'Text' in filename:
-    #     download(img.get('data-src'), './nouns/', filename)
-    # else:
-    #     download(img.get('data-src'), './characters/', filename)
-
-    # download properties
-    # if 'data-src' in img.attrs:
-    # download(img.get('src'), './properties/', filename)
-    # print(img)
-
-    # download operators
-
-    # print()
-
-    # end download
-    print('====== IMAGE DOWNLOAD SUCCESSFULLY ======')
+    print('====== DOWNLOAD SUCCESSFULLY ======')
 
 
 def main():
@@ -109,7 +73,7 @@ def main():
     url_props = 'https://babaiswiki.fandom.com/wiki/Category:Properties'
     # get_operators(url_op)
     # get_nouns(url_nouns)
-    get_properties(url_props)
+    # get_properties(url_props)
 
 
 if __name__ == '__main__':
