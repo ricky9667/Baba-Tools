@@ -38,12 +38,31 @@ def get_nouns(url):
 
     for img in imgs:
         filename = img.get('data-image-key')
+        fileSrc = img.get('data-src')
         if 'Text' in filename:
-            download(img.get('data-src'), './nouns/', filename)
+            download(fileSrc, './nouns/', filename)
         else:
-            download(img.get('data-src'), './characters/', filename)
+            download(fileSrc, './characters/', filename)
 
     print('====== DOWNLOAD SUCCESSFULLY ======')
+
+
+def get_properties(url):
+    print('Getting properties ...')
+    resp = requests.get(url)
+    soup = BeautifulSoup(resp.text, 'html.parser')
+    table = soup.find('table', class_='article-table')
+    tds = table.find_all('td')
+
+    for td in tds:
+        if 'style' in td.attrs:
+            img = td.find('img')
+            filename = img.get('data-image-key')
+            if 'data-src' in img.attrs:
+                fileSrc = img.get('data-src')
+            else:
+                fileSrc = img.get('src')
+            download(fileSrc, './properties/', filename)
 
 
 def get_images(url, type):
@@ -89,7 +108,8 @@ def main():
     url_op = 'https://babaiswiki.fandom.com/wiki/Category:Operators'
     url_props = 'https://babaiswiki.fandom.com/wiki/Category:Properties'
     # get_operators(url_op)
-    get_nouns(url_nouns)
+    # get_nouns(url_nouns)
+    get_properties(url_props)
 
 
 if __name__ == '__main__':
