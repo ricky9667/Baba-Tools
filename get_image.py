@@ -44,7 +44,6 @@ def get_nouns(url):
             download(fileSrc, './nouns/', filename)
         else:
             download(fileSrc, './characters/', filename)
-
     print('====== DOWNLOAD SUCCESSFULLY ======')
 
 
