@@ -4,15 +4,30 @@ from bs4 import BeautifulSoup
 
 
 def download(url, path, name):
-    # print('url =', url)
-    # print('path =', path)
-    # print('name =', name)
     urllib.request.urlretrieve(url, path + name)
     print('Downloaded file:', name)
 
 
-def get_operators(table):
-    td = table.find_all('td', rowspan='2')
+def get_operators():
+    url = 'https://babaiswiki.fandom.com/wiki/Category:Operators'
+    resp = requests.get(url)
+    soup = BeautifulSoup(resp.text, 'html.parser')
+    table = soup.find('table', class_='article-table')
+    tds = table.find_all('td')
+
+    for td in tds:
+        if 'rowspan' in td.attrs:
+            img = td.find('img')
+            filename = img.get('data-image-key')
+            fileSrc = ''
+            if 'data-src' in img.attrs:
+                fileSrc = img.get('data-src')
+            else:
+                fileSrc = img.get('src')
+
+            print(filename)
+            print(fileSrc)
+            download(fileSrc, './operators/', filename)
 
 
 def get_images(url, type):
@@ -23,37 +38,40 @@ def get_images(url, type):
     soup = BeautifulSoup(resp.text, 'html.parser')
     table = soup.find('table', class_='article-table')
 
-    imgs = table.find_all('img')
-    for img in imgs:
-        # print(img)
-        if 'data-src' in img:
-            print(img)
-        filename = img.get('data-image-key')
-        # print(img.attrs)
+    # get operator images
+    get_operators(table)
 
-        # download nouns
-        # if 'Text' in filename:
-        #     download(img.get('data-src'), './nouns/', filename)
-        # else:
-        #     download(img.get('data-src'), './characters/', filename)
+    # imgs = table.find_all('img')
+    # for img in imgs:
+    # print(img)
+    # if 'data-src' in img:
+    # print(img)
+    # filename = img.get('data-image-key')
+    # print(img.attrs)
 
-        # download properties
-        # if 'data-src' in img.attrs:
-        # download(img.get('src'), './properties/', filename)
-        # print(img)
+    # download nouns
+    # if 'Text' in filename:
+    #     download(img.get('data-src'), './nouns/', filename)
+    # else:
+    #     download(img.get('data-src'), './characters/', filename)
 
-        # download operators
+    # download properties
+    # if 'data-src' in img.attrs:
+    # download(img.get('src'), './properties/', filename)
+    # print(img)
 
-        print()
+    # download operators
+
+    # print()
 
     # end download
     print('====== IMAGE DOWNLOAD SUCCESSFULLY ======')
 
 
 def main():
-    url = 'https://babaiswiki.fandom.com/wiki/Category:Properties'
-    # test(url)
-    get_images(url, 'operators')
+    get_operators()
+    # url = 'https://babaiswiki.fandom.com/wiki/Category:Operators'
+    # get_images(url, 'operators')
 
 
 if __name__ == '__main__':
