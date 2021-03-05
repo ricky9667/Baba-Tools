@@ -8,8 +8,7 @@ def download(url, path, name):
     print('Downloaded file:', name)
 
 
-def get_operators():
-    url = 'https://babaiswiki.fandom.com/wiki/Category:Operators'
+def get_operators(url):
     resp = requests.get(url)
     soup = BeautifulSoup(resp.text, 'html.parser')
     table = soup.find('table', class_='article-table')
@@ -28,6 +27,23 @@ def get_operators():
             print(filename)
             print(fileSrc)
             download(fileSrc, './operators/', filename)
+
+
+def get_nouns(url):
+    print('Getting nouns ...')
+    resp = requests.get(url)
+    soup = BeautifulSoup(resp.text, 'html.parser')
+    table = soup.find('table', class_='article-table')
+    imgs = table.find_all('img')
+
+    for img in imgs:
+        filename = img.get('data-image-key')
+        if 'Text' in filename:
+            download(img.get('data-src'), './nouns/', filename)
+        else:
+            download(img.get('data-src'), './characters/', filename)
+
+    print('====== DOWNLOAD SUCCESSFULLY ======')
 
 
 def get_images(url, type):
@@ -69,9 +85,11 @@ def get_images(url, type):
 
 
 def main():
-    get_operators()
-    # url = 'https://babaiswiki.fandom.com/wiki/Category:Operators'
-    # get_images(url, 'operators')
+    url_nouns = 'https://babaiswiki.fandom.com/wiki/Category:Nouns'
+    url_op = 'https://babaiswiki.fandom.com/wiki/Category:Operators'
+    url_props = 'https://babaiswiki.fandom.com/wiki/Category:Properties'
+    # get_operators(url_op)
+    get_nouns(url_nouns)
 
 
 if __name__ == '__main__':
