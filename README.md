@@ -1,7 +1,9 @@
-# Baba Crawler
+# Baba Tools
 
+## Baba Crawler
 An image crawler that downloads gifs from [Baba Is You Wiki](https://babaiswiki.fandom.com/wiki/Baba_Is_You_Wiki)
 
+## Scene Setup Generator
 ### Announcement
 
 This is a project only used by a clone project in a university course.
