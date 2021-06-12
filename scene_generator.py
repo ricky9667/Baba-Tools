@@ -10,10 +10,9 @@ Choose a generate thing type
 (0) end
 > '''
 thing_setup_msg = '''
-Input range in this format:
-\'start_x start_y end_x end_y\'
-1 3 3 5 => creates objects in square of (1,3) and (3,5)
-All inputs should be numbers, input \'ok\' to finish position input
+[x y] => create object at (x, y)
+[x1 x2 y1 y2] create object from (x1, y1) to (x2, y2)
+Press Enter to stop input
 '''
 
 
@@ -63,15 +62,20 @@ def get_thing_name(type_index):
 def get_thing_setup(name, pos):
     setups = []
     if len(pos) < 2 or len(pos) > 4:
-        return None
+        return setups
 
-    start_x, start_y = pos[0], pos[1]
-    end_x, end_y = pos[0], pos[1]
+    x1, x2, y1, y2 = 0, 0, 0, 0
     if len(pos) == 4:
-        end_x, end_y = pos[2], pos[3]
+        x1, x2, y1, y2 = pos[0], pos[1], pos[2], pos[3]
+    if len(pos) >= 2:
+        x1, x2 = pos[0], pos[0]+1
+        y1, y2 = pos[1], pos[1]+1
+    if len(pos) == 1:
+        print('Input at least 2 numbers!')
+        return setups
 
-    for x in range(start_x, end_x+1):
-        for y in range(start_y, end_y+1):
+    for x in range(x1, x2+1):
+        for y in range(y1, y2+1):
             setups.append({
                 'defaultBlockX': x,
                 'defaultBlockY': y,
@@ -81,7 +85,36 @@ def get_thing_setup(name, pos):
     return setups
 
 
+def get_ranges(thing_name, type_index, object):
+    print('[ ' + thing_types[type_index] + ', ' + object + ' ]')
+
+    thing_setup = []
+    while True:
+        flag = True
+        pos_range = input('Input range: ')
+        if pos_range == '':
+            break
+
+        pos_range = pos_range.split(' ')
+        for i, x in enumerate(pos_range):
+            if not x.isdecimal():
+                print('Input numbers!')
+                flag = False
+                break
+            pos_range[i] = int(x)
+
+        if not flag:
+            continue
+
+        setups = get_thing_setup(thing_name, pos_range)
+        for setup in setups:
+            thing_setup.append(setup)
+
+    return thing_setup
+
+
 def main():
+    show_message = True
     print('Scene Setup Generator')
 
     # get basic data
@@ -91,27 +124,26 @@ def main():
 
     # input things
     while True:
-        # get thing type
-        type_index = int(input(thing_type_msg))
+        print('\n------------------------')
 
+        # get thing type
+        type_index_str = input(thing_type_msg)
+        while not type_index_str.isdigit():
+            type_index_str = input(thing_type_msg)
+
+        type_index = int(type_index_str)
         if not type_index in range(1, 5):
             break
+
         thing_species = thing_types[type_index]
         thing_name = get_thing_name(type_index)
 
-        thing_setup = []
-        print(thing_setup_msg)
-
-        while True:
-            pos_range = input('Input range: ')
-            if pos_range == 'ok':
-                break
-            pos_range = pos_range.split(' ')
-            pos_range = [int(i) for i in pos_range]
-
-            setups = get_thing_setup(thing_name, pos_range)
-            for setup in setups:
-                thing_setup.append(setup)
+        if show_message:
+            print(thing_setup_msg)
+            stop_showing = input('Stop showing input instructions? (y/N) ')
+            if stop_showing == 'Y' or stop_showing == 'y':
+                show_message = False
+        thing_setup = get_ranges(thing_name, type_index, thing_name)
 
         thing = {
             'species': thing_species,
@@ -122,6 +154,7 @@ def main():
         things_map.append(thing)
 
     print('\nGenerating scene setup...\n')
+
     setup = {
         'id': id,
         'name': name,
@@ -133,6 +166,8 @@ def main():
     filename = id + '.json'
     with open(filename, 'w', encoding='utf-8') as f:
         json.dump(setup, f, ensure_ascii=False, indent=2)
+
+    print(filename + ' created.')
 
 
 if __name__ == '__main__':
