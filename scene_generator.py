@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 
 thing_types = ['leave', 'characters', 'nouns', 'operators', 'properties']
 thing_type_msg = '''
@@ -11,7 +12,7 @@ Choose a generate thing type
 > '''
 thing_setup_msg = '''
 [x y] => create object at (x, y)
-[x1 x2 y1 y2] create object from (x1, y1) to (x2, y2)
+[x1 x2 y1 y2] => create object from (x1, y1) to (x2, y2)
 Press Enter to stop input
 '''
 
@@ -67,12 +68,20 @@ def get_thing_setup(name, pos):
     x1, x2, y1, y2 = 0, 0, 0, 0
     if len(pos) == 4:
         x1, x2, y1, y2 = pos[0], pos[1], pos[2], pos[3]
-    if len(pos) >= 2:
-        x1, x2 = pos[0], pos[0]+1
-        y1, y2 = pos[1], pos[1]+1
-    if len(pos) == 1:
+    elif len(pos) >= 2:
+        x1, x2 = pos[0], pos[0]
+        y1, y2 = pos[1], pos[1]
+    elif len(pos) == 1:
         print('Input at least 2 numbers!')
         return setups
+    else:
+        print('Invalid input size')
+        return setups
+
+    if x1 > x2:
+        x1, x2 = x2, x1
+    if y1 > y2:
+        y1, y2 = y2, y1
 
     for x in range(x1, x2+1):
         for y in range(y1, y2+1):
@@ -163,11 +172,11 @@ def main():
         'thingsMap': things_map
     }
 
-    filename = id + '.json'
-    with open(filename, 'w', encoding='utf-8') as f:
+    filePath = './setups/' + id + '.json'
+    with open(filePath, 'w', encoding='utf-8') as f:
         json.dump(setup, f, ensure_ascii=False, indent=2)
 
-    print(filename + ' created.')
+    print('Scene setup file created at ' + filePath + '.')
 
 
 if __name__ == '__main__':
