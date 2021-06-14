@@ -167,8 +167,8 @@ def main():
     setup = {
         'id': id,
         'name': name,
-        'sceneWidth': width,
-        'sceneHeight': height,
+        'sceneWidth': int(width),
+        'sceneHeight': int(height),
         'thingsMap': things_map
     }
 
