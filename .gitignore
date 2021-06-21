@@ -1,4 +1,9 @@
 .DS_Store
+
 *.json
 *.gif
+*.png
+
 /setups
+/gif
+/png
