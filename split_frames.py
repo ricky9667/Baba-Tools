@@ -48,7 +48,7 @@ def generate_frames(type):
 def main():
     for type in types:
         select = input(
-            'Do you want to generate split frames for ' + type + '? (Y,n) ')
+            'Do you want to generate split frames for ' + type + '? (Y/n) ')
         if select == 'N' or select == 'n':
             continue
 
