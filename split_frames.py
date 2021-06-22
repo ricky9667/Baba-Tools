@@ -52,6 +52,11 @@ def main():
         if select == 'N' or select == 'n':
             continue
 
+        try:
+            os.mkdir('./png')
+        except:
+            pass
+        
         print('Generating frames of ' + type + '...')
         generate_frames(type)
         print('Frames of ' + type + ' are generated in ./png/'+type+'.')
