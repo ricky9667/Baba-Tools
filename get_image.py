@@ -16,7 +16,7 @@ def get_nouns(url):
     resp = requests.get(url)
     soup = BeautifulSoup(resp.text, 'html.parser')
     table = soup.find('table', class_='article-table')
-    imgs = table.find_all('img')
+    imgs = table.find_all('kimg')
 
     try:
         os.mkdir('./gif/characters')
